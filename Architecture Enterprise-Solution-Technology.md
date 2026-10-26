@@ -74,7 +74,15 @@ X Do not try to model the universe - Think: "What NOT to include?"
 
 
 - Architecture Decision Records (ADR)
-    👉 Critical for why, not just what
+    - What are we doing
+    - What are the problems
+    - What are possible solutions
+    - Contraints / Tradeoffs / Risk
+    - Decision + Why
+    - Why Alternatives were rejected
+Consumers (Stakeholders): Devs, Manager, Integration/Teams, DevOps, etc...
+
+👉 Critical for why, not just what
 
 
 - System design document
