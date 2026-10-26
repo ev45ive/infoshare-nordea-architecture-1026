@@ -37,4 +37,27 @@
 **Exercise**: Mark critical outcomes and irreversible transitions.
 
 
+---
+
+# Define the Observation Boundary
+
+- Possible measurements
+  - API response time
+  - Durable acceptance in the database
+  - Final ledger state
+  - External settlement confirmation
+
+## Problem
+- Fast `202 Accepted` ≠ durable acceptance
+- Durable acceptance ≠ completed payment
+
+# Decisions
+- Start <---> end events
+- System boundary and ownership
+- User-visible meaning of each state
+
+
+**Exercise**: Draw two different measurement intervals.
+
+---
 
