@@ -92,3 +92,22 @@ Consumers (Stakeholders): Devs, Manager, Integration/Teams, DevOps, etc...
 - Operational design (SLO,SLA,Metrics,Incident management)
 
 --- 
+
+
+# Technical / IT / Software Architecture Design
+
+- databases
+- languages
+- how to do it 
+- what to use
+
+## Artifacts
+- Reference architectures
+- Technology standards list
+- Platform diagrams
+- Security models
+- CI/CD templates
+
+# Example
+
+“All services must run on Kubernetes, use OAuth2, and communicate via event bus.”
