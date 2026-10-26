@@ -27,3 +27,11 @@
 - "We received your request."
 - "Your money has moved."
 - "The transfer has settled."
+
+
+## Distinguishing questions
+- Which outcome is business-critical?
+- Which steps does BankX control?
+- Can a declined transfer be a correctly handled request?
+
+**Exercise**: Mark critical outcomes and irreversible transitions.
