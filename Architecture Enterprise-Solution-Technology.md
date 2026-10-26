@@ -51,4 +51,36 @@ Long-term transformation (e.g. “move to cloud”, “become API-first”)
 👉 Think: “Given this messy reality, what system shape gives the best outcomes?”
 X Do not try to model the universe - Think: "What NOT to include?"
 
+
+### Tasks
+- Define system structure
+- Select technologies with justification
+- Identify risks and tradeoffs
+- Ensure non-functional requirements:
+- scalability
+- reliability
+- security
+- performance
+- Enable team alignment
+
+
+## Artifacts 
+- Architecture diagrams
+    - Context diagram (system in environment)
+    - Container diagram (services/apps)
+    - Component diagram (internal structure)
+    - Sequence diagrams (flows)
+  👉 Often using C4 model
+
+
+- Architecture Decision Records (ADR)
+    👉 Critical for why, not just what
+
+
+- System design document
+- Domain model
+- API contracts
+- Data architecture
+- Operational design (SLO,SLA,Metrics,Incident management)
+
 --- 
