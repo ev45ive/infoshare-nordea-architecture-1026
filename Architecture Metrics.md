@@ -135,3 +135,69 @@
   - Which SLO breaches first?
   - Which dependencies create correlated failures?
   - What can BankX guarantee independently?
+
+---
+
+# Competing Architectural Solutions
+
+A. Synchronous orchestration
+ - API waits for ledger and clearing provider
+ - Simple execution and state flow
+ - Provider failures directly affect response latency
+
+
+B. Queue and acknowledge
+- Asynchronous processing
+- Fast API response
+- Risk of false acknowledgment without durable enqueue
+- Requires backlog and retry management
+
+C. Durable intent + outbox + workers
+
+- Persist transfer intent before acknowledgment
+- Transactional outbox and idempotent consumers
+- Explicit status transitions and reconciliation
+- Increased operational complexity
+
+---
+
+# Force the Architectural Trade-offs
+
+- **Compare alternatives against**
+  - API latency during provider slowness
+  - Durability after acknowledgment
+  - Duplicate prevention
+  - Finality during external outages
+  - Operational and recovery complexity
+
+- **Discriminating questions**
+  - Is accepted a durable promise?
+  - Can payment status remain pending?
+  - Can finality be separated from acceptance?
+  - How much external dependency risk is acceptable?
+
+- **Exercise**: Eliminate one architecture using a hard constraint, not preference.
+
+---
+
+# Make and Defend a Decision (ADR)
+- Candidate: C — Durable intent + outbox + idempotent workers
+
+Reasons
+- Acceptance decoupled from clearing-provider latency
+- Retries correlated to one logical transfer
+- Deferred processing is visible and recoverable
+
+Costs
+- More states and infrastructure
+- Reconciliation requirements
+- Backlog management and observability
+
+Unresolved conflict
+- 60-second finality cannot be guaranteed through an unavailable provider
+
+Architectural decision
+- Improve provider redundancy or guarantees
+- Renegotiate the business promise if necessary
+- Do not hide provider failures through artificial metric exclusions
+
