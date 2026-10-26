@@ -117,3 +117,21 @@
 - What happens when error budgets are exhausted?
 
 ---
+
+# Introduce a Failure Scenario
+
+- **Incident**
+  - External clearing provider p99 latency → 45 seconds
+  - 3% of requests return 503 for 10 minutes
+  - Clients retry timed-out requests
+  - Notification service unavailable for 20 minutes
+
+- **Constraints**
+  - No acknowledged transfer may disappear
+  - No duplicate posting
+  - Customers must see truthful payment status
+
+- **Challenge**
+  - Which SLO breaches first?
+  - Which dependencies create correlated failures?
+  - What can BankX guarantee independently?
