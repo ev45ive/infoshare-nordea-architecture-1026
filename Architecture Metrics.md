@@ -35,3 +35,6 @@
 - Can a declined transfer be a correctly handled request?
 
 **Exercise**: Mark critical outcomes and irreversible transitions.
+
+
+
