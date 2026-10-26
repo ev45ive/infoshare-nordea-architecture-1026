@@ -27,5 +27,5 @@
 # Works in talking to business
 
 - Refactor, rewrite, update, etc..  - sounds like "Change",  like "Expensive" 
-- Quality / Complexity  <  Clarity
+- Quality / Complexity  <  Clarity / Visibility
 - 
