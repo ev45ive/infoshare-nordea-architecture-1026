@@ -61,3 +61,21 @@
 
 ---
 
+
+# Turn Requirements into SLIs
+
+### SLI A — Durable acceptance
+- Numerator: Eligible transfers durably accepted within 2 seconds
+- Denominator: All eligible, valid transfer submissions
+
+### SLI B — Timely finality
+- Numerator: Transfers reaching posted / rejected within 60 seconds
+- Denominator: All accepted transfers
+
+### Edge cases
+- Client retries and duplicate requests
+- Timeouts and missing responses
+- Valid business rejections vs technical failures
+- Permanently stuck pending transfers
+
+**Exercise**: Find two ways these metrics could give misleading results.
