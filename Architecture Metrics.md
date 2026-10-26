@@ -201,3 +201,34 @@ Architectural decision
 - Renegotiate the business promise if necessary
 - Do not hide provider failures through artificial metric exclusions
 
+
+---
+
+# Verify with Experiments
+
+**Instrumentation**
+- Public API ingress timestamps
+- Durable database commit
+- Final ledger status
+- Correlation by logical transfer ID
+
+**Failure injection**
+- Provider latency and 503 responses
+- Duplicate client retries
+- Worker crashes
+- Queue backlog
+- Notification outage
+
+**Assertions**
+- No acknowledgment before durable commit
+- No lost or duplicate postings
+- Measured SLIs satisfy targets under declared test conditions
+- Pending transfers remain visible and recoverable
+
+**Decision**
+- Keep architecture
+- Improve implementation or capacity
+- Renegotiate external guarantees
+- Revisit unrealistic SLOs
+
+---
