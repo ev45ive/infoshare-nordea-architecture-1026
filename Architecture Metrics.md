@@ -16,6 +16,17 @@
 - Identify three incompatible interpretations of "payment succeeded."
 
 
+---
+
+# Dictionary
+
+- SLI (Service Level Indicator) 
+- SLO (Service Level Objective)
+- SLA (Service Level Agreement)
+
+---
+
+
 # Start with the Business / User Journey
 
 **"Transfer journey"**:
@@ -79,3 +90,30 @@
 - Permanently stuck pending transfers
 
 **Exercise**: Find two ways these metrics could give misleading results.
+
+--- 
+
+# Define Proper SLOs
+
+**Acceptance SLO**
+- ≥99.9% of eligible valid production transfers
+- Durably accepted within 2 seconds
+- Measured from public API ingress
+- Rolling 30-day window
+
+**Finality SLO**
+- ≥99% of accepted production transfers
+- Definitive outcome within 60 seconds
+- Measured from durable acceptance
+- Rolling 30-day window
+
+**Error budgets**
+- Acceptance: 0.1%
+- Finality: 1%
+
+**Questions**
+- Who owns each SLO?
+- Can external providers support these targets?
+- What happens when error budgets are exhausted?
+
+---
