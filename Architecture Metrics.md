@@ -14,3 +14,16 @@
 
 ## Exercise: 
 - Identify three incompatible interpretations of "payment succeeded."
+
+
+# Start with the Business / User Journey
+
+**"Transfer journey"**:
+- Submit → Validate → Accept → Book → Settle → Notify
+- Login, choose recipient, choose account, amount ...
+
+
+## Different promises
+- "We received your request."
+- "Your money has moved."
+- "The transfer has settled."
