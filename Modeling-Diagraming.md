@@ -179,3 +179,44 @@ https://ariscommunity.com/users/q2y5np9c6o38/2019-10-07-capability-based-plannin
     - Shows customer stages, interactions, goals, frustrations, and experiences.
     - Answers: What does the customer experience across channels? Where do organizational or system boundaries harm that experience?
 
+
+# Data Architecture & Information Modeling
+
+- Entity–Relationship Diagram (ERD)
+    - Represents entities, attributes, identifiers, and relationships.
+    - Answers: What data exists? How are entities related? What integrity constraints are necessary?
+
+
+- Conceptual Data Model
+    - High-level representation of business information, independent of database technology.
+    - Answers: What information concepts are important to the business? What do different stakeholders mean by the same terms?
+
+- Logical Data Model
+    - Defines data structures, keys, relationships, cardinalities, and constraints without tying them to a specific DBMS.
+    - Answers: How should information be structured consistently? Which entities and relationships need normalization?
+
+- Physical Data Model
+    - Represents concrete tables, columns, types, keys, indexes, and storage-specific structures.
+    - Answers: How will data actually be persisted? What schema and database constraints will be implemented?
+
+- Data Flow Diagram (DFD)
+    - Shows processes, external entities, data stores, and movement of information.
+    - Answers: Where does information originate, move, and get transformed? What information crosses system boundaries?
+
+# Data warehouse
+
+- Data Lineage Diagram
+    - Traces information through source systems, transformations, intermediate datasets, and destinations.
+    - Answers: Where did this data come from? What downstream reports, models, or services are affected if a source changes?
+
+- Data Ownership / System-of-Record Map
+    - Maps information domains to their authoritative owners and consuming systems.
+    - Answers: Which system owns each piece of data? Who may update it? Where are conflicting sources of truth?
+
+- Data Lifecycle Diagram
+    - Models data from creation and processing through retention, archival, and deletion.
+    - Answers: How long is data retained? When must it be deleted? Which regulatory or operational obligations apply?
+
+- Data Pipeline / ETL DAG
+    - Shows extraction, transformation, validation, loading, and dependency relationships.
+    - Answers: In what order must datasets be processed? What happens if a transformation fails? Which stages can run in parallel?
