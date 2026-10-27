@@ -85,3 +85,23 @@ https://ariscommunity.com/users/q2y5np9c6o38/2019-10-07-capability-based-plannin
 - Code Diagram (C4 Level 4)
     - Describes implementation structures using classes, interfaces, functions, or other code-level constructs.
     - Answers: How is a component implemented? Which code elements collaborate?
+
+
+## Boundaries & Decomposition
+
+- Package Diagram (UML)
+    - Shows logical packages, namespaces, modules, and dependencies between them.
+    - Answers: How should the codebase be partitioned? Which modules depend on which others? Where are dependency cycles?
+
+    - Ownership (Teams), Versioning, Dependencies  - Whats deployed together
+
+- Component Diagram (UML)
+    - Models components with provided and required interfaces and dependency relationships.
+    - Answers: What contracts connect components? Can one implementation be replaced without changing its consumers?
+
+    - Ownership (Teams), Versioning, Dependencies - What talks to what
+
+- Composite Structure Diagram (UML)
+- Layered Architecture Diagram
+- Hexagonal / Ports-and-Adapters Diagram
+
