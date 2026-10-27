@@ -31,3 +31,15 @@ One transfer workflow: Submit → Validate → Post → Clear → Notify.
 Task
 - Identify conflicting requirements.
 - Ask which words conceal different assumptions.
+
+## What is meaning of word "Confirmation" - Resolve ambiguities
+
+- Request is revieved? UI interface status
+- Durably accepted? - saved in db?
+- Money posted? 
+- External clearing confiremd?
+
+- 2 second confirmation <> 8 seconds clearing.
+
+> Stakeholder define success diferently
+
