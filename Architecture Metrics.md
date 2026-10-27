@@ -255,34 +255,64 @@ Architectural decision
 | Concept                 | Purpose                                | BankX example                                                                             |
 | ----------------------- | -------------------------------------- | ----------------------------------------------------------------------------------------- |
 | Metric                  | Measure something                      | API p99 latency = 420 ms                                                                  |
-| SLI                     | Measure service quality                | 99.7% of transfers accepted within 2 seconds       (Lead-ing)                                         |
-| SLO                     | Define acceptable service quality      | ≥99.9% accepted within 2 seconds over 30 days      (Lag-ing)                                 |
+| SLI                     | Measure service quality                | 99.7% of transfers accepted within 2 seconds (Lead-ing)                                   |
+| SLO                     | Define acceptable service quality      | ≥99.9% accepted within 2 seconds over 30 days (Lag-ing)                                   |
 | Fit-ness function       | Evaluate architectural fitness         | Verify that payment acceptance remains fast and durable during clearing-provider failures |
 | Architectural invariant | Define something that must always hold | No transfer is posted twice                                                               |
-
 
 ---
 
 # Relationships
 
 ## Architectural driver
+
 Payments must be reliable despite provider failures (Stakeholder)
 👇
 
 # Metrics / SLIs
+
 Observe actual behavior
 👇
 
 # SLOs / Constraints
+
 Define acceptable behavior
 👇
 
 # Architecture fitness function
+
 Evaluate whether the architectural characteristic is preserved under defined conditions
 👇
 
 # Feedback: Pass / Fail / Trend
+
 Retain, improve or reconsider the design
 
 ---
 
+### Same metric, different fitness functions
+
+| Architectural concern | Metric                       | Fitness function                                                                    |
+| --------------------- | ---------------------------- | ----------------------------------------------------------------------------------- |
+| Performance           | p99 API latency              | Load test: under 500 req/s, p99 stays below 300 ms                                  |
+| Availability          | Successful request ratio     | Inject instance failure; availability stays above defined threshold                 |
+| Resilience            | Failed transactions          | Disable clearing provider; accepted transfers remain durable and recoverable        |
+| Consistency           | Replication lag              | After a transfer, same-session balance reads reflect the new state within 2 seconds |
+| Scalability           | Throughput                   | Double workload; verify SLOs are met without exceeding agreed resource limits       |
+| Modularity            | Dependency count             | CI architecture test rejects forbidden module dependencies                          |
+| Security              | Unauthorized access attempts | Cross-account access tests demonstrate correct isolation                            |
+| Deployability         | Failed deployments           | Verify rollback restores service within 2 minutes                                   |
+| Recoverability        | Actual recovery time         | Simulate regional outage; restore critical operations within the RTO                |
+
+Distinction: A fitness function adds a verification mechanism, but it does not necessarily require a failure scenario.
+A continuous production SLO evaluation may itself serve as an architectural fitness function when it protects an important architectural characteristic.
+
+## Categories of fitness functions
+
+| Dimension | Variants                          | Example                                                                     |
+| --------- | --------------------------------- | --------------------------------------------------------------------------- |
+| Scope     | Atomic / Holistic                 | Module dependency check / End-to-end recovery test                          |
+| Execution | Automated / Manual                | CI architecture test / Expert architecture review against explicit criteria |
+| Timing    | Triggered / Continuous / Periodic | Pull request / Production monitoring / Quarterly DR exercise                |
+| Behavior  | Static / Dynamic                  | Dependency graph / Chaos experiment                                         |
+| Result    | Binary / Quantitative             | Forbidden dependency absent / Performance degradation score                 |
