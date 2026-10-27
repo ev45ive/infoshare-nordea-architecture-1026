@@ -154,3 +154,14 @@ https://ariscommunity.com/users/q2y5np9c6o38/2019-10-07-capability-based-plannin
 - State Machine Diagram (UML)
     - Models states, events, guards, actions, and transitions for an entity or system.
     - Answers: What states are valid? Which transitions are permitted? What happens on an unexpected event?
+
+# Distributed systems
+
+- Saga / Distributed Transaction Diagram
+    - Shows distributed transaction steps, local commits, compensations, and failure paths.
+    - Answers: How is a business operation completed without one global transaction? What happens after partial failure?
+
+- Request Lifecycle Diagram
+    - Traces a request through authentication, validation, orchestration, processing, storage, and response generation.
+    - Answers: Where is time spent? Which components can reject or transform a request? Where does failure propagate?
+
