@@ -309,3 +309,31 @@ https://ariscommunity.com/users/q2y5np9c6o38/2019-10-07-capability-based-plannin
 - Sensitive Data Flow / Privacy Map
     - Traces personal or sensitive information through systems, processors, storage, and external recipients.
     - Answers: Where is sensitive information processed? Who can access it? What privacy obligations and exposure risks exist?
+
+
+# Reliability, Performance & Quality Attributes
+
+- Quality Attribute Scenario Diagram
+    - Connects a stimulus source, stimulus, environment, affected artifact, response, and measurable response.
+    - Answers: What should happen under a specific operational condition? How will we know the quality requirement is met?
+
+- Fault Tree Analysis (FTA)
+    - Uses logical gates to decompose an undesirable failure into contributing events and conditions.
+    - Answers: What combinations of failures could cause an outage or other unacceptable outcome? Which failures deserve mitigation?
+
+- Reliability Block Diagram (RBD)
+    - Models series, parallel, and redundant dependencies affecting system reliability.
+    - Answers: How do component reliabilities combine? How much availability can redundancy improve?
+
+- Failure Propagation Diagram
+    - Shows how failures, congestion, timeouts, or resource exhaustion can spread through dependencies.
+    - Answers: What is the blast radius of a failure? Where should isolation, circuit breakers, or fallback behavior be introduced?
+
+- Capacity / Queuing Model
+    - Represents request arrival rates, service capacity, queues, workers, and resource limits.
+    - Answers: Where will bottlenecks form? How will latency and throughput change as load increases?
+
+- Service Dependency / Health Model
+    - Maps services and dependencies with health signals and degradation states.
+    - Answers: What determines whether the system is healthy? Which dependency failures affect critical user journeys or SLOs?
+
