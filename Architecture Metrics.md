@@ -91,6 +91,9 @@
 
 **Exercise**: Find two ways these metrics could give misleading results.
 
+
+ Goodhart's Law: “When a measure becomes a target, it ceases to be a good measure”
+
 --- 
 
 # Define Proper SLOs
