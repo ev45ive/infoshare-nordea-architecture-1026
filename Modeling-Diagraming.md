@@ -337,3 +337,30 @@ https://ariscommunity.com/users/q2y5np9c6o38/2019-10-07-capability-based-plannin
     - Maps services and dependencies with health signals and degradation states.
     - Answers: What determines whether the system is healthy? Which dependency failures affect critical user journeys or SLOs?
 
+
+# Architecture Evolution, Migration & Planning
+
+- Baseline vs. Target Architecture Diagram
+    - Compares the current architecture with the desired future structure.
+    - Answers: What must change? Which current limitations are removed? Which new dependencies are introduced?
+
+- Transition Architecture Diagram (ArchiMate)
+    - Represents intermediate architectural states between baseline and target.
+    - Answers: What viable intermediate states can the organization operate in? What must coexist during migration?
+
+- Migration Roadmap / Plateau Diagram (ArchiMate)
+    - Shows architectural plateaus, implementation work, gaps, and transitions over time.
+    - Answers: In what order should changes occur? What dependencies constrain the migration sequence?
+
+- Strangler Migration Diagram
+    - Shows legacy and replacement systems coexisting while responsibilities are incrementally redirected.
+    - Answers: Which capabilities can be migrated independently? How is traffic switched? When can the legacy implementation be retired?
+
+- Migration Dependency Graph
+    - Shows technical, business, data, and organizational prerequisites between migration tasks.
+    - Answers: What must happen first? Which tasks block other work? Where is the critical path?
+
+- Change Impact Diagram
+    - Maps a proposed change to affected services, interfaces, data stores, business processes, and stakeholders.
+    - Answers: What else might break or require modification? Who must coordinate or approve the change?
+
