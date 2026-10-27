@@ -105,3 +105,33 @@ https://ariscommunity.com/users/q2y5np9c6o38/2019-10-07-capability-based-plannin
 - Layered Architecture Diagram
 - Hexagonal / Ports-and-Adapters Diagram
 
+
+# Software Structure, Object Models & Design
+- Domain Driven Design
+
+- Class Diagram (UML)
+    - Shows classes, attributes, operations, associations, composition, and inheritance.
+    - Answers: What are the types and their relationships? Which abstractions own which responsibilities?
+
+- Object Diagram (UML)
+    - Shows a snapshot of concrete object instances and links at a particular moment.
+    - Answers: What does a valid runtime object structure look like? Can the model represent this specific scenario?
+
+- Profile Diagram (UML)
+    - Defines domain-specific extensions to UML using stereotypes, tagged values, and constraints.
+    - Answers: How can standard UML concepts be customized consistently for a particular domain?
+
+# Pipe, Pipe, pipe ... - Shared, Ubiqitous Language  - Busines <> Code 
+
+- Domain Model Diagram (DDD / UML-like)
+    - Represents business concepts, relationships, invariants, and shared vocabulary.
+    - Answers: What concepts exist in the problem domain? Which distinctions matter to business rules?
+
+- Bounded Context Map (DDD)
+    - Shows bounded contexts and relationships such as Customer–Supplier, Shared Kernel, or Anti-Corruption Layer.
+    - Answers: Where should model boundaries exist? Which teams or systems must translate concepts between contexts?
+
+- Aggregate Diagram (DDD)
+    - Shows aggregate roots, internal entities, value objects, and consistency boundaries.
+    - Answers: What must change atomically? Where are transactional invariants enforced?
+
