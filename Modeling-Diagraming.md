@@ -251,3 +251,34 @@ https://ariscommunity.com/users/q2y5np9c6o38/2019-10-07-capability-based-plannin
 - Distributed Consistency / Replication Diagram
     - Shows leaders, replicas, synchronization, quorum, and consistency relationships.
     - Answers: How does information propagate between nodes? What happens during network partitions or concurrent updates?
+
+
+# Infrastructure, Deployment & Network Architecture
+
+- Deployment Diagram (UML / C4 variants)
+    - Maps software artifacts, services, and containers onto execution environments and infrastructure nodes.
+    - Answers: Where does software run? Which nodes host which elements? How are runtime components connected?
+
+- Infrastructure Topology Diagram
+    - Shows servers, load balancers, databases, storage, networking, and supporting infrastructure.
+    - Answers: What infrastructure is required? What depends on what? Where could bottlenecks or single points of failure exist?
+
+- Cloud Architecture Diagram
+    - Represents managed services, regions, accounts, subscriptions, storage, compute, and connectivity.
+    - Answers: Which cloud services implement the solution? Where are costs, operational responsibilities, and provider dependencies introduced?
+
+- Network Topology Diagram
+    - Shows networks, subnets, routers, firewalls, gateways, and connections.
+    - Answers: Which network paths exist? What can communicate with what? Where are routing, bandwidth, or isolation constraints?
+
+- High-Availability / Multi-Region Diagram
+    - Shows redundant components, availability zones, regions, failover paths, and replication relationships.
+    - Answers: What continues working after a node, zone, or region fails? Which shared dependencies remain?
+
+- Cluster / Orchestration Diagram
+    - Shows Kubernetes clusters or equivalent orchestration structures, workloads, services, ingress, and scaling groups.
+    - Answers: How are workloads scheduled and exposed? How are failures handled and capacity scaled?
+
+- Environment / Release Topology
+    - Maps development, testing, staging, production, and their configuration or data dependencies.
+    - Answers: Where is software validated before release? Which environments differ? How is production isolated?
