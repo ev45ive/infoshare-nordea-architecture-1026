@@ -135,3 +135,22 @@ https://ariscommunity.com/users/q2y5np9c6o38/2019-10-07-capability-based-plannin
     - Shows aggregate roots, internal entities, value objects, and consistency boundaries.
     - Answers: What must change atomically? Where are transactional invariants enforced?
 
+
+# Runtime Behavior, Interactions & State
+
+- Sequence Diagram (UML)
+    - Shows messages exchanged between participants in chronological order.
+    - Answers: What happens during this scenario? Who calls whom? Where do retries, timeouts, and failures occur?
+
+- Communication Diagram (UML)
+    - Emphasizes collaborating objects and their message relationships, with ordering labels.
+    - Answers: Which objects communicate? How are responsibilities distributed across participants?
+
+
+- Activity Diagram (UML)
+    - Shows control flow, decisions, concurrent activities, and object flows.
+    - Answers: What steps are performed? What branches or parallel work can occur?
+
+- State Machine Diagram (UML)
+    - Models states, events, guards, actions, and transitions for an entity or system.
+    - Answers: What states are valid? Which transitions are permitted? What happens on an unexpected event?
