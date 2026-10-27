@@ -62,3 +62,26 @@ https://ariscommunity.com/users/q2y5np9c6o38/2019-10-07-capability-based-plannin
         - CIO: Which applications should we modernize, consolidate, or retire?
         - Finance Director: Where are we spending money on low-value applications?
         - Enterprise Architect: Which legacy applications create the greatest architectural constraints?
+
+
+# System Context, Boundaries & Decomposition
+
+- System Landscape Diagram (C4)
+    - Overview of multiple software systems and their relationships across an organization.
+    - Answers: What systems exist? Which depend on each other? Where do responsibilities overlap?
+
+- System Context Diagram (C4 Level 1)
+    - Shows one system in relation to users, external systems, and integrations.
+    - Answers: What is inside and outside our scope? Who interacts with the system? What external dependencies exist?
+
+- Container Diagram (C4 Level 2)
+    - Decomposes a system into applications, services, databases, and other runnable or storage units.
+    - Answers: What are the major technical building blocks? What responsibilities and technologies do they have? How do they communicate?
+
+- Component Diagram (C4 Level 3)
+    - Shows the major logical components inside a particular application or service.
+    - Answers: How is this service internally organized? Where are its interfaces and dependencies?
+
+- Code Diagram (C4 Level 4)
+    - Describes implementation structures using classes, interfaces, functions, or other code-level constructs.
+    - Answers: How is a component implemented? Which code elements collaborate?
