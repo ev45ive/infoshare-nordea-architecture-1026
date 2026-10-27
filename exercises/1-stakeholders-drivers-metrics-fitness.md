@@ -92,3 +92,42 @@ SLO:
 - ≥98%, rolling 30 days
 
 
+# Introduce a failure scenario
+
+> Incident card 
+- Clearing provider becomes unavailable for 5 minutes.
+- A request may have executed before its response timed out.
+- Customers retry after 2 seconds.
+- A BankX worker crashes immediately after sending a request.
+
+**Task**
+- Identify what breaks.
+- Separate observable facts from unknown state.
+
+**Observations**:
+- SLI - 60s <> 5m - SLOs
+
+
+# Investigate and compare solutions, choose trade-offs.
+
+- Problems + requs
+- Option A ,B ,C + tradeoffs
+- Decision 
+
+> Proposed ADR
+
+# Design fitness functions and tests
+
+- Selected architecture.
+- Two SLOs and two domain invariants.
+- Failure scenario.
+
+- Define a repeatable experiment for each architectural guarantee.
+
+- Load test -> verify 99% 2s
+- 100 concurent retrues with same ID
+- Simulate provider unknown status/response
+- Chaos - kill worker, restart, reconcile
+- Sustained degradation
+
+> Accepted ADR
