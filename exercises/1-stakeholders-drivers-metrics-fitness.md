@@ -72,3 +72,23 @@ Invariant 2: Completed - authoritative evidence of success
              -> Rejected (T)        -> Failed (T)
 
 > Define how funds are reserved or released on failure?
+
+# Convert quality expectations into SLOs
+
+- Product still demands a response in 2 seconds.
+- Risk refuses misleading success messages.
+
+**Task**:
+- Define two SLIs and corresponding SLOs.
+- Specify numerator, denominator, boundary and measurement window.
+
+SLI:
+- Eligible requests receiving a valid, durable acceptance or business rejection within 2 s ÷ all eligible requests
+
+- Accepted transfers reaching a definitive outcome within 60s  ÷ all accepted transfer
+
+SLO:
+- ≥99.9%, rolling 30 days
+- ≥98%, rolling 30 days
+
+
