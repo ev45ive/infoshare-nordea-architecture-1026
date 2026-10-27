@@ -165,3 +165,17 @@ https://ariscommunity.com/users/q2y5np9c6o38/2019-10-07-capability-based-plannin
     - Traces a request through authentication, validation, orchestration, processing, storage, and response generation.
     - Answers: Where is time spent? Which components can reject or transform a request? Where does failure propagate?
 
+# Business Processes, Workflows & Decisions 
+
+- Use Case Diagram (UML)
+    - Shows actors, system capabilities, and relationships between use cases.
+    - Answers: What functionality does the system expose? Who initiates or participates in each interaction?
+
+- Process Diagram (BPMN)
+    - Models business activities, events, gateways, conditions, and execution paths.
+    - Answers: How does a business process work? What happens next? Where are decisions, exceptions, and parallel activities?
+
+- Customer Journey Map
+    - Shows customer stages, interactions, goals, frustrations, and experiences.
+    - Answers: What does the customer experience across channels? Where do organizational or system boundaries harm that experience?
+
