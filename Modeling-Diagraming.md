@@ -364,3 +364,30 @@ https://ariscommunity.com/users/q2y5np9c6o38/2019-10-07-capability-based-plannin
     - Maps a proposed change to affected services, interfaces, data stores, business processes, and stakeholders.
     - Answers: What else might break or require modification? Who must coordinate or approve the change?
 
+
+
+# Architecture Evaluation & Decision Support
+
+- Trade-off Map
+    - Visualizes competing quality attributes and architectural alternatives.
+    - Answers: What does each solution optimize or sacrifice? Which trade-offs are unavoidable?
+
+- Decision Tree
+    - Represents decisions, branching conditions, possible outcomes, and consequences.
+    - Answers: Which architectural option is appropriate under different constraints or assumptions?
+
+- Architecture Risk Map
+    - Places risks against dimensions such as impact, likelihood, uncertainty, or architectural exposure.
+    - Answers: Which architectural risks deserve investigation first? Where should verification effort be concentrated?
+
+- Sensitivity / Trade-off Point Map (ATAM)
+    - Identifies architectural decisions that strongly influence one or several quality attributes.
+    - Answers: Which decisions are most sensitive to changing requirements? Where does improving one attribute harm another?
+
+- Dependency Structure Matrix (DSM)
+    - A square matrix visualizing dependencies between components, often revealing clusters and cycles.
+    - Answers: Where is coupling concentrated? Which elements can be separated? Which dependencies prevent independent evolution?
+
+- Architecture Fitness Function Map
+    - Connects architectural characteristics and constraints to automated or manual verification mechanisms.
+    - Answers: How will architecture rules be continuously checked? Which intended properties could silently regress?
