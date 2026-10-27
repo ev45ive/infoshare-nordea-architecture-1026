@@ -43,3 +43,32 @@ Task
 
 > Stakeholder define success diferently
 
+
+# Define business outcomes and metrics
+
+- Product: "abandonment" 18% → 10%.
+- Operations: €0.10/transfer. "cost"
+
+
+**Task**
+- Define one measurable business KPI for each stakeholder.
+- Distinguish controllable system behavior from business outcomes.
+
+# Extract functional requirements and invariants
+
+New question
+- "What must remain correct even if we miss performance targets?"
+
+**Task**
+- Define two non-negotiable invariants.
+- Define the meaning of transfer states.
+
+
+Invariant 1: One transfer causes at most one ledger debit
+Invariant 2: Completed - authoritative evidence of success
+
+## State: 
+    Recieved -> Accepted -> Pending -> Completed (T)
+             -> Rejected (T)        -> Failed (T)
+
+> Define how funds are reserved or released on failure?
