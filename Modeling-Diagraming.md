@@ -220,3 +220,34 @@ https://ariscommunity.com/users/q2y5np9c6o38/2019-10-07-capability-based-plannin
 - Data Pipeline / ETL DAG
     - Shows extraction, transformation, validation, loading, and dependency relationships.
     - Answers: In what order must datasets be processed? What happens if a transformation fails? Which stages can run in parallel?
+
+
+# Integration, APIs & Distributed Systems
+
+- Integration Architecture Diagram
+    - Maps systems, APIs, brokers, integration middleware, protocols, and connections.
+    - Answers: How are systems integrated? Which integrations are synchronous, asynchronous, or batch-based?
+
+- API Contract / Interface Map
+    - Shows provided and consumed interfaces, endpoints, versions, and dependencies.
+    - Answers: Which contracts connect systems? Who depends on which API? What could break after a contract change?
+
+- Event-Driven Architecture Diagram
+    - Maps event producers, brokers, topics, subscriptions, and consumers.
+    - Answers: How are events distributed? Where is coupling introduced? What are the delivery and ordering dependencies?
+
+- Message Routing Diagram
+    - Shows routing, filtering, transformation, enrichment, aggregation, and delivery paths.
+    - Answers: How does a message reach the correct destination? Where are transformations, retries, and dead-letter handling applied?
+
+- Event Storming Board (DDD)
+    - Uses domain events, commands, actors, policies, and aggregates to explore business behavior.
+    - Answers: What actually happens in the domain? What triggers actions? Where might consistency and ownership boundaries belong?
+
+- CQRS Read/Write Architecture Diagram
+    - Separates commands, authoritative write models, projections, and query/read models.
+    - Answers: Where is authoritative state changed? How are read models updated? Where can eventual consistency arise?
+
+- Distributed Consistency / Replication Diagram
+    - Shows leaders, replicas, synchronization, quorum, and consistency relationships.
+    - Answers: How does information propagate between nodes? What happens during network partitions or concurrent updates?
