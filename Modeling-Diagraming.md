@@ -282,3 +282,30 @@ https://ariscommunity.com/users/q2y5np9c6o38/2019-10-07-capability-based-plannin
 - Environment / Release Topology
     - Maps development, testing, staging, production, and their configuration or data dependencies.
     - Answers: Where is software validated before release? Which environments differ? How is production isolated?
+
+
+# Security, Privacy & Trust
+
+- Trust Boundary Diagram
+    - Shows components, data flows, and boundaries between different levels of trust.
+    - Answers: Where does untrusted input enter? Which interactions require authentication, validation, or other controls?
+
+- Threat Modeling DFD
+    - Represents processes, data stores, flows, and trust boundaries for systematic threat analysis.
+    - Answers: What can be attacked? Where could spoofing, tampering, information disclosure, or privilege escalation occur?
+
+- Attack Tree
+    - Decomposes an attacker objective into possible strategies and prerequisite actions.
+    - Answers: How could an attacker achieve a specific outcome? Which preventive or detective controls interrupt the attack?
+
+- Identity & Authorization Flow Diagram
+    - Models identity providers, applications, tokens, authentication, delegation, and authorization checks.
+    - Answers: Who authenticates whom? Where are permissions enforced? How do identities and credentials flow through the system?
+
+- Security Zone / Segmentation Diagram
+    - Organizes systems into zones based on sensitivity, trust, and allowed communication.
+    - Answers: Which assets must be isolated? Where should firewalls, gateways, and access restrictions be enforced?
+
+- Sensitive Data Flow / Privacy Map
+    - Traces personal or sensitive information through systems, processors, storage, and external recipients.
+    - Answers: Where is sensitive information processed? Who can access it? What privacy obligations and exposure risks exist?
