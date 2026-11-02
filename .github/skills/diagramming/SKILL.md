@@ -12,7 +12,7 @@ Produce a working diagram in a plain `.md` file that renders in the VS Code Mark
 ## Workflow
 
 1. **Pick the diagram type** with the decision rules below. Read the matching file in `diagrams/uml/` or `diagrams/architecture/` for repo conventions.
-2. **Check icon names** against the bundled packs (see "Icons") before using them. Do not guess.
+2. **Use icons directly.** VS Code's Mermaid preview already provides the `logos:` and `mdi:` packs, and `architecture-beta` already supports them. Do not check the packs before each use. Use the verified names listed below. Only look up a name in the packs if a render shows the icon missing or the user reports a problem.
 3. **Write the diagram** in a fenced ` ```mermaid ` block inside a `.md` file. Use the repo file layout: a title, a one-line "Mermaid type" note, the diagram, then a Legend and Notes if icons are used.
 4. **Lay out** with `align` (architecture-beta) or by reducing edges. Keep edges short and mostly between neighbours.
 5. **Verify**: the user refreshes the VS Code Markdown preview (`Ctrl+Shift+V`). Only claim a render after the user confirms, or after a headless render check.
@@ -58,13 +58,15 @@ Rules of thumb:
   - Use these only as a fallback. `align` and fewer edges fix more.
 
 ### Icons
-- Built-in names: `cloud`, `database`, `disk`, `internet`, `server`.
-- Logo packs bundled with VS Code's Mermaid preview: `logos:` (719 icons) and `mdi:` (6573 icons). No install needed. Use the `name:icon` form.
+- Assume these are available in VS Code. Do not install anything or check them each time:
+  - Built-in names: `cloud`, `database`, `disk`, `internet`, `server`.
+  - Logo packs registered by VS Code's Mermaid preview: `logos:` and `mdi:`. Use the `name:icon` form.
+- Only re-check when a render shows a missing icon or the user reports one.
 - Verified `logos` names: `aws-cloudfront`, `aws-waf`, `aws-api-gateway`, `auth0-icon`, `aws-eks`, `spring-icon`, `nodejs-icon`, `kafka-icon`, `aws-elasticache`, `aws-redshift`, `aws-aurora`, `mongodb-icon`, `aws-s3`, `apache-spark`, `airflow-icon`, `opentelemetry-icon`, `github-icon`, `terraform-icon`, `argo-icon`.
 - Verified `mdi` names: `language-python`, `database-search`, `chart-line`, `view-dashboard`, `eye-outline`.
 - Not in the bundled `logos` pack (do not use): `keycloak`, `apache-airflow`, `java`, `python`, `redis`, `postgresql`, `elasticsearch`, `grafana`, `prometheus`, plain `opentelemetry`, plain `kafka`.
 - Missing logo: use the closest `logos` icon or a generic `mdi` icon, and say so in the Legend.
-- Check a new name with exact-match extraction from `/usr/share/code/resources/app/extensions/mermaid-markdown-features/markdown-preview-out/logos-*.js` or `mdi-*.js` (Linux path). Do not use `tr` to strip characters, because it removes letters from names.
+- Only when a name fails to render: check it with exact-match extraction from the bundled `logos-*.js` or `mdi-*.js` files under the VS Code Mermaid extension (`markdown-preview-out/`). Do not use `tr` to strip characters, because it removes letters from names.
 
 ### Known version note
 - The bundled extension's `package.json` says Mermaid 10.0.0, but its architecture renderer includes `align` and the layout keys. Trust the bundle over the version string. Test any new feature in the preview before relying on it.
@@ -101,7 +103,7 @@ Flowchart shape reference:
 
 ## Checklist before done
 - [ ] Diagram type matches the decision table
-- [ ] Every icon name exists in the bundled packs
+- [ ] Icon names are from the verified lists (re-check only if a render failed)
 - [ ] No `{group}` on service edges, no groups as edge endpoints
 - [ ] Each tier uses `align row`, edges mostly connect neighbours
 - [ ] No duplicate edges
