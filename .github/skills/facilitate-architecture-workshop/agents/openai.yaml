@@ -1,0 +1,4 @@
+interface:
+  display_name: "Architecture Workshop Facilitator"
+  short_description: "Guide staged architecture decisions and evidence"
+  default_prompt: "Use $facilitate-architecture-workshop to guide the current workshop phase from its released package, preserve decision history, and stop at the phase gate."
