@@ -1,3 +1,7 @@
 ./scratchpad
 !./scratchpad/.gitkeep
 
+./exercise-project
+!./exercise-project/.gitkeep
+
+
