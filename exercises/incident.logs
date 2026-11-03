@@ -1,0 +1,164 @@
+# ---------------------------------------------------------------------------
+# Example: "Order-to-Cash" business process log (microservices, async events)
+# Format (mostly): <ts> <level> <service>[pid] <trace_id> <span_id> <corr_id> <msg> <kv...>
+# NOTE: This is synthetic but realistic. One subtle problem is embedded.
+# ---------------------------------------------------------------------------
+
+2026-03-02T09:58:11.902+01:00 INFO  api-gw[18422] trace=7a6a1e2b9d7a4a9b span=9f7d corr=req-0d2c msg="HTTP request" method=POST path="/checkout" ip=203.0.113.77 ua="Mozilla/5.0" tenant=acme env=prod
+2026-03-02T09:58:11.908+01:00 INFO  api-gw[18422] trace=7a6a1e2b9d7a4a9b span=0a41 corr=req-0d2c msg="Auth ok" user_id=u_104829 account_id=a_77821 roles="buyer" mfa=false
+2026-03-02T09:58:11.914+01:00 INFO  api-gw[18422] trace=7a6a1e2b9d7a4a9b span=5c21 corr=req-0d2c msg="Route" upstream="order-svc" timeout_ms=8000
+
+2026-03-02T09:58:11.941+01:00 INFO  order-svc[22110] trace=7a6a1e2b9d7a4a9b span=1b9a corr=req-0d2c msg="CreateCheckout" cart_id=c_559912 user_id=u_104829 account_id=a_77821 channel=web
+2026-03-02T09:58:11.952+01:00 DEBUG order-svc[22110] trace=7a6a1e2b9d7a4a9b span=1b9a corr=req-0d2c msg="Pricing snapshot" items=3 subtotal=199.00 currency=EUR promo="SPRING-20" promo_disc=39.80 shipping=0.00 tax_est=30.44 total_est=189.64 vat_country=DE vat_mode=OSS
+2026-03-02T09:58:11.968+01:00 INFO  order-svc[22110] trace=7a6a1e2b9d7a4a9b span=41c0 corr=req-0d2c msg="Order draft created" order_id=o_900771 status=DRAFT amount=189.64 currency=EUR
+2026-03-02T09:58:11.973+01:00 INFO  order-svc[22110] trace=7a6a1e2b9d7a4a9b span=7f1c corr=req-0d2c msg="Emit event" topic=orders key=o_900771 event="OrderDrafted" seq=1
+
+2026-03-02T09:58:11.984+01:00 INFO  bus[299] trace=7a6a1e2b9d7a4a9b span=0001 corr=req-0d2c msg="Kafka produce ok" topic=orders partition=12 offset=884192 key=o_900771
+
+2026-03-02T09:58:12.007+01:00 INFO  payment-svc[24001] trace=7a6a1e2b9d7a4a9b span=ac01 corr=o_900771 msg="Consume event" topic=orders event="OrderDrafted" seq=1
+2026-03-02T09:58:12.018+01:00 DEBUG payment-svc[24001] trace=7a6a1e2b9d7a4a9b span=ac01 corr=o_900771 msg="Compute idempotency key" strategy="orderId+utcDate" idem_key="pay:o_900771:2026-03-02"
+2026-03-02T09:58:12.031+01:00 INFO  payment-svc[24001] trace=7a6a1e2b9d7a4a9b span=ac02 corr=o_900771 msg="CreatePaymentIntent" provider=stripe amount=18964 currency=EUR idem_key="pay:o_900771:2026-03-02" capture=manual
+2026-03-02T09:58:12.201+01:00 INFO  payment-svc[24001] trace=7a6a1e2b9d7a4a9b span=ac02 corr=o_900771 msg="PaymentIntent created" provider_pi=pi_3PzN7eK9 status=requires_payment_method
+
+2026-03-02T09:58:12.233+01:00 INFO  order-svc[22110] trace=7a6a1e2b9d7a4a9b span=41c1 corr=req-0d2c msg="Checkout response" order_id=o_900771 client_secret="***" expires_in_s=900
+
+2026-03-02T09:58:18.414+01:00 INFO  api-gw[18422] trace=5c1c02b0d12b43a9 span=1a01 corr=req-1b88 msg="HTTP request" method=POST path="/checkout/confirm" ip=203.0.113.77 user_id=u_104829
+2026-03-02T09:58:18.431+01:00 INFO  order-svc[22112] trace=5c1c02b0d12b43a9 span=2b01 corr=req-1b88 msg="ConfirmCheckout" order_id=o_900771 user_id=u_104829
+2026-03-02T09:58:18.439+01:00 DEBUG order-svc[22112] trace=5c1c02b0d12b43a9 span=2b02 corr=req-1b88 msg="Lock order" order_id=o_900771 lock=acquired ttl_ms=3000
+2026-03-02T09:58:18.453+01:00 INFO  order-svc[22112] trace=5c1c02b0d12b43a9 span=2b03 corr=req-1b88 msg="Transition" order_id=o_900771 from=DRAFT to=PENDING_PAYMENT
+
+2026-03-02T09:58:18.498+01:00 INFO  payment-svc[24009] trace=8b9b9b0a2f2c4d22 span=bb01 corr=o_900771 msg="Stripe webhook" event="payment_intent.succeeded" provider_pi=pi_3PzN7eK9 attempt=1
+2026-03-02T09:58:18.511+01:00 INFO  payment-svc[24009] trace=8b9b9b0a2f2c4d22 span=bb02 corr=o_900771 msg="Record payment" payment_id=p_450991 order_id=o_900771 amount=18964 currency=EUR status=AUTHORIZED
+2026-03-02T09:58:18.522+01:00 INFO  payment-svc[24009] trace=8b9b9b0a2f2c4d22 span=bb03 corr=o_900771 msg="Emit event" topic=payments event="PaymentAuthorized" payment_id=p_450991 order_id=o_900771 seq=1
+
+2026-03-02T09:58:18.533+01:00 INFO  bus[299] trace=8b9b9b0a2f2c4d22 span=0002 corr=o_900771 msg="Kafka produce ok" topic=payments partition=7 offset=210044 key=o_900771
+
+2026-03-02T09:58:18.560+01:00 INFO  order-svc[22112] trace=5c1c02b0d12b43a9 span=2b04 corr=req-1b88 msg="Consume event" topic=payments event="PaymentAuthorized" order_id=o_900771 payment_id=p_450991 seq=1
+2026-03-02T09:58:18.573+01:00 INFO  order-svc[22112] trace=5c1c02b0d12b43a9 span=2b05 corr=req-1b88 msg="Transition" order_id=o_900771 from=PENDING_PAYMENT to=CONFIRMED
+
+2026-03-02T09:58:18.588+01:00 INFO  fulfillment-svc[25301] trace=0d4f7b69c2be4f9c span=f101 corr=o_900771 msg="Consume event" topic=orders event="OrderConfirmed" order_id=o_900771 seq=1
+2026-03-02T09:58:18.606+01:00 DEBUG fulfillment-svc[25301] trace=0d4f7b69c2be4f9c span=f102 corr=o_900771 msg="Inventory check" sku=SKU-ALPHA qty=1 available=true
+2026-03-02T09:58:18.609+01:00 DEBUG fulfillment-svc[25301] trace=0d4f7b69c2be4f9c span=f102 corr=o_900771 msg="Inventory check" sku=SKU-BETA qty=2 available=true
+2026-03-02T09:58:18.623+01:00 INFO  fulfillment-svc[25301] trace=0d4f7b69c2be4f9c span=f103 corr=o_900771 msg="Reserve stock" reservation_id=r_771020 order_id=o_900771 ttl_min=30
+2026-03-02T09:58:18.650+01:00 INFO  invoicing-svc[26220] trace=3d9f13e0c8a84c0d span=i101 corr=o_900771 msg="Consume event" topic=orders event="OrderConfirmed" order_id=o_900771
+2026-03-02T09:58:18.668+01:00 DEBUG invoicing-svc[26220] trace=3d9f13e0c8a84c0d span=i102 corr=o_900771 msg="Tax finalize" vat_country=DE vat_rate=0.19 vat_amount=30.44 net_amount=159.20 gross_amount=189.64 currency=EUR rounding=bankers
+2026-03-02T09:58:18.691+01:00 INFO  invoicing-svc[26220] trace=3d9f13e0c8a84c0d span=i103 corr=o_900771 msg="Invoice created" invoice_id=inv_882100 order_id=o_900771 number="FV/2026/03/01234" total=189.64 currency=EUR status=ISSUED
+2026-03-02T09:58:18.710+01:00 INFO  invoicing-svc[26220] trace=3d9f13e0c8a84c0d span=i104 corr=o_900771 msg="Emit event" topic=invoices event="InvoiceIssued" invoice_id=inv_882100 order_id=o_900771 seq=1
+
+2026-03-02T09:58:18.731+01:00 INFO  ledger-svc[27011] trace=2acfc96e1aef4b0d span=l101 corr=o_900771 msg="Consume event" topic=invoices event="InvoiceIssued" invoice_id=inv_882100
+2026-03-02T09:58:18.739+01:00 DEBUG ledger-svc[27011] trace=2acfc96e1aef4b0d span=l102 corr=o_900771 msg="Journal draft" journal_id=j_90110 lines=4
+2026-03-02T09:58:18.742+01:00 DEBUG ledger-svc[27011] trace=2acfc96e1aef4b0d span=l102 corr=o_900771 msg="Line" acct="AR"     dr=189.64 cr=0.00 currency=EUR
+2026-03-02T09:58:18.744+01:00 DEBUG ledger-svc[27011] trace=2acfc96e1aef4b0d span=l102 corr=o_900771 msg="Line" acct="REV"    dr=0.00 cr=159.20 currency=EUR
+2026-03-02T09:58:18.746+01:00 DEBUG ledger-svc[27011] trace=2acfc96e1aef4b0d span=l102 corr=o_900771 msg="Line" acct="VAT_OUT"dr=0.00 cr=30.44 currency=EUR
+2026-03-02T09:58:18.748+01:00 DEBUG ledger-svc[27011] trace=2acfc96e1aef4b0d span=l102 corr=o_900771 msg="Line" acct="ROUND"  dr=0.00 cr=0.00 currency=EUR
+2026-03-02T09:58:18.771+01:00 INFO  ledger-svc[27011] trace=2acfc96e1aef4b0d span=l103 corr=o_900771 msg="Journal posted" journal_id=j_90110 status=POSTED
+
+2026-03-02T09:58:19.012+01:00 INFO  payment-svc[24002] trace=9d1b6a2a3f3b4af2 span=cc01 corr=o_900771 msg="Capture requested" payment_id=p_450991 provider_pi=pi_3PzN7eK9 amount=18964 currency=EUR
+2026-03-02T09:58:19.150+01:00 INFO  payment-svc[24002] trace=9d1b6a2a3f3b4af2 span=cc02 corr=o_900771 msg="Capture ok" provider_charge=ch_1Qw9xA status=CAPTURED
+
+2026-03-02T09:58:19.177+01:00 INFO  payment-svc[24002] trace=9d1b6a2a3f3b4af2 span=cc03 corr=o_900771 msg="Emit event" topic=payments event="PaymentCaptured" payment_id=p_450991 order_id=o_900771 seq=2
+
+2026-03-02T09:58:19.214+01:00 INFO  order-svc[22112] trace=5c1c02b0d12b43a9 span=2b06 corr=req-1b88 msg="Consume event" topic=payments event="PaymentCaptured" order_id=o_900771 payment_id=p_450991 seq=2
+2026-03-02T09:58:19.230+01:00 INFO  order-svc[22112] trace=5c1c02b0d12b43a9 span=2b07 corr=req-1b88 msg="Transition" order_id=o_900771 from=CONFIRMED to=PAID
+
+2026-03-02T09:58:19.261+01:00 INFO  fulfillment-svc[25301] trace=0d4f7b69c2be4f9c span=f104 corr=o_900771 msg="Pick/pack" shipment_id=s_118200 carrier="DHL" service="DE-STD" est_days=2
+2026-03-02T09:58:19.299+01:00 INFO  fulfillment-svc[25301] trace=0d4f7b69c2be4f9c span=f105 corr=o_900771 msg="Label purchased" shipment_id=s_118200 tracking="JD0146001234567890"
+2026-03-02T09:58:19.331+01:00 INFO  notifications[19021] trace=7d0a9ad5a31f4c55 span=n101 corr=o_900771 msg="Email queued" template="order_paid" to="user@example.com" order_id=o_900771
+
+# ---- user changes mind: adds add-on after payment, triggers amend + partial refund + re-auth (complex path)
+
+2026-03-02T10:03:44.012+01:00 INFO  api-gw[18422] trace=5b6a8d5bffb84232 span=aa01 corr=req-2c13 msg="HTTP request" method=POST path="/orders/o_900771/amend" user_id=u_104829
+2026-03-02T10:03:44.036+01:00 INFO  order-svc[22133] trace=5b6a8d5bffb84232 span=aa02 corr=req-2c13 msg="AmendOrder" order_id=o_900771 reason="Add SKU-GAMMA" current_status=PAID
+2026-03-02T10:03:44.060+01:00 DEBUG order-svc[22133] trace=5b6a8d5bffb84232 span=aa03 corr=req-2c13 msg="Amend pricing" add_sku=SKU-GAMMA qty=1 add_price=29.00 new_subtotal=228.00 promo="SPRING-20" promo_disc=45.60 new_tax_est=34.86 new_total_est=217.26 currency=EUR
+2026-03-02T10:03:44.071+01:00 INFO  order-svc[22133] trace=5b6a8d5bffb84232 span=aa04 corr=req-2c13 msg="Create amendment" amend_id=am_33019 order_id=o_900771 delta=+27.62 currency=EUR requires_payment=true
+
+2026-03-02T10:03:44.095+01:00 INFO  payment-svc[24011] trace=5b6a8d5bffb84232 span=pp01 corr=o_900771 msg="Start payment for amendment" amend_id=am_33019 delta=2762 currency=EUR
+2026-03-02T10:03:44.103+01:00 DEBUG payment-svc[24011] trace=5b6a8d5bffb84232 span=pp01 corr=o_900771 msg="Compute idempotency key" strategy="orderId+utcDate" idem_key="pay:o_900771:2026-03-02"
+2026-03-02T10:03:44.116+01:00 WARN  payment-svc[24011] trace=5b6a8d5bffb84232 span=pp02 corr=o_900771 msg="Stripe idempotency replay" idem_key="pay:o_900771:2026-03-02" action="CreatePaymentIntent" reused_provider_pi=pi_3PzN7eK9 note="Provider returned existing intent"
+2026-03-02T10:03:44.128+01:00 INFO  payment-svc[24011] trace=5b6a8d5bffb84232 span=pp03 corr=o_900771 msg="Attach new line-item metadata" provider_pi=pi_3PzN7eK9 amend_id=am_33019 expected_delta=2762 expected_currency=EUR
+
+2026-03-02T10:03:44.168+01:00 INFO  invoicing-svc[26221] trace=5b6a8d5bffb84232 span=ii01 corr=o_900771 msg="Amendment invoice request" amend_id=am_33019 order_id=o_900771
+2026-03-02T10:03:44.190+01:00 INFO  invoicing-svc[26221] trace=5b6a8d5bffb84232 span=ii02 corr=o_900771 msg="Invoice created" invoice_id=inv_882155 order_id=o_900771 number="FV/2026/03/01235" total=27.62 currency=EUR status=ISSUED type=AMENDMENT
+2026-03-02T10:03:44.207+01:00 INFO  invoicing-svc[26221] trace=5b6a8d5bffb84232 span=ii03 corr=o_900771 msg="Emit event" topic=invoices event="InvoiceIssued" invoice_id=inv_882155 order_id=o_900771 seq=2
+
+# ---- payment capture attempt for amendment (should capture only delta, but intent reused...)
+
+2026-03-02T10:04:01.010+01:00 INFO  payment-svc[24012] trace=0f50c2c1b2d64d83 span=cp01 corr=o_900771 msg="Capture requested (amendment)" amend_id=am_33019 provider_pi=pi_3PzN7eK9 amount=2762 currency=EUR
+2026-03-02T10:04:01.042+01:00 ERROR payment-svc[24012] trace=0f50c2c1b2d64d83 span=cp02 corr=o_900771 msg="Capture failed" provider_pi=pi_3PzN7eK9 code="amount_exceeds_authorized" detail="Cannot capture 2762; intent already captured 18964" retryable=false
+
+2026-03-02T10:04:01.078+01:00 WARN  order-svc[22133] trace=5b6a8d5bffb84232 span=aa05 corr=req-2c13 msg="Amendment payment failed" amend_id=am_33019 order_id=o_900771 failure="amount_exceeds_authorized" action="fallback_reauth"
+
+# ---- fallback: create a new payment intent for delta (but subtle currency conversion path appears)
+
+2026-03-02T10:04:01.091+01:00 INFO  payment-svc[24012] trace=0f50c2c1b2d64d83 span=cp03 corr=o_900771 msg="Fallback: CreatePaymentIntent" reason="reauth_delta" amount=2762 currency=EUR
+2026-03-02T10:04:01.099+01:00 DEBUG payment-svc[24012] trace=0f50c2c1b2d64d83 span=cp03 corr=o_900771 msg="Compute idempotency key" strategy="orderId+utcDate" idem_key="pay:o_900771:2026-03-02"
+2026-03-02T10:04:01.120+01:00 WARN  payment-svc[24012] trace=0f50c2c1b2d64d83 span=cp04 corr=o_900771 msg="Stripe idempotency replay" idem_key="pay:o_900771:2026-03-02" action="CreatePaymentIntent" reused_provider_pi=pi_3PzN7eK9
+
+2026-03-02T10:04:01.152+01:00 INFO  payment-svc[24012] trace=0f50c2c1b2d64d83 span=cp05 corr=o_900771 msg="Fallback route: Use alternate provider" provider=adyen reason="stripe_intent_reused"
+2026-03-02T10:04:01.168+01:00 DEBUG payment-svc[24012] trace=0f50c2c1b2d64d83 span=cp06 corr=o_900771 msg="FX quote" src=EUR dst=GBP rate=0.8571 provider=adyen locked_for_s=120
+2026-03-02T10:04:01.171+01:00 INFO  payment-svc[24012] trace=0f50c2c1b2d64d83 span=cp07 corr=o_900771 msg="CreatePaymentIntent" provider=adyen amount=23.67 currency=GBP original_amount=27.62 original_currency=EUR
+2026-03-02T10:04:01.291+01:00 INFO  payment-svc[24012] trace=0f50c2c1b2d64d83 span=cp07 corr=o_900771 msg="PaymentIntent created" provider=adyen provider_pi=ady_pi_77219 status=authorized
+
+2026-03-02T10:04:01.334+01:00 INFO  payment-svc[24012] trace=0f50c2c1b2d64d83 span=cp08 corr=o_900771 msg="Capture requested" provider=adyen provider_pi=ady_pi_77219 amount=23.67 currency=GBP
+2026-03-02T10:04:01.420+01:00 INFO  payment-svc[24012] trace=0f50c2c1b2d64d83 span=cp09 corr=o_900771 msg="Capture ok" provider=adyen psp_ref=psp_889120 status=captured
+
+2026-03-02T10:04:01.451+01:00 INFO  payment-svc[24012] trace=0f50c2c1b2d64d83 span=cp10 corr=o_900771 msg="Emit event" topic=payments event="PaymentCaptured" payment_id=p_451020 order_id=o_900771 amount=2367 currency=GBP fx_original=27.62 fx_currency=EUR seq=3
+
+2026-03-02T10:04:01.481+01:00 INFO  order-svc[22133] trace=5b6a8d5bffb84232 span=aa06 corr=req-2c13 msg="Consume event" topic=payments event="PaymentCaptured" order_id=o_900771 payment_id=p_451020 seq=3
+2026-03-02T10:04:01.495+01:00 INFO  order-svc[22133] trace=5b6a8d5bffb84232 span=aa07 corr=req-2c13 msg="Apply amendment" amend_id=am_33019 order_id=o_900771 status=APPLIED
+2026-03-02T10:04:01.508+01:00 INFO  order-svc[22133] trace=5b6a8d5bffb84232 span=aa08 corr=req-2c13 msg="Emit event" topic=orders event="OrderAmended" order_id=o_900771 amend_id=am_33019 seq=2
+
+# ---- accounting: ledger posts amendment; note currency handling + rounding path
+
+2026-03-02T10:04:01.540+01:00 INFO  ledger-svc[27015] trace=1a6a0f2c6d2b4c35 span=l201 corr=o_900771 msg="Consume event" topic=invoices event="InvoiceIssued" invoice_id=inv_882155 type=AMENDMENT
+2026-03-02T10:04:01.552+01:00 DEBUG ledger-svc[27015] trace=1a6a0f2c6d2b4c35 span=l202 corr=o_900771 msg="Journal draft" journal_id=j_90188 lines=4 base_currency=EUR fx_mode="from_event_if_present"
+2026-03-02T10:04:01.559+01:00 DEBUG ledger-svc[27015] trace=1a6a0f2c6d2b4c35 span=l202 corr=o_900771 msg="Line" acct="AR"     dr=27.62 cr=0.00 currency=EUR
+2026-03-02T10:04:01.562+01:00 DEBUG ledger-svc[27015] trace=1a6a0f2c6d2b4c35 span=l202 corr=o_900771 msg="Line" acct="REV"    dr=0.00 cr=23.21 currency=EUR
+2026-03-02T10:04:01.565+01:00 DEBUG ledger-svc[27015] trace=1a6a0f2c6d2b4c35 span=l202 corr=o_900771 msg="Line" acct="VAT_OUT"dr=0.00 cr=4.41 currency=EUR
+2026-03-02T10:04:01.569+01:00 DEBUG ledger-svc[27015] trace=1a6a0f2c6d2b4c35 span=l202 corr=o_900771 msg="Line" acct="FX_GAIN_LOSS" dr=0.00 cr=0.00 currency=EUR
+2026-03-02T10:04:01.590+01:00 INFO  ledger-svc[27015] trace=1a6a0f2c6d2b4c35 span=l203 corr=o_900771 msg="Journal posted" journal_id=j_90188 status=POSTED
+
+# ---- later: reconciliation job spots mismatch; very hard to connect back to idempotency collision + cross-currency capture
+
+2026-03-02T11:30:00.003+01:00 INFO  recon-svc[31002] trace=9f2b1a1e0b2b49c5 span=r001 corr=job-20260302-1130 msg="Start reconciliation" window="2026-03-02T10:00:00Z..2026-03-02T10:59:59Z" sources="stripe,adyen,ledger"
+2026-03-02T11:30:00.221+01:00 DEBUG recon-svc[31002] trace=9f2b1a1e0b2b49c5 span=r010 corr=job-20260302-1130 msg="Aggregate payments" order_id=o_900771 payments=2 gross_by_currency="EUR:189.64,GBP:23.67" fx_original_present=true
+2026-03-02T11:30:00.401+01:00 DEBUG recon-svc[31002] trace=9f2b1a1e0b2b49c5 span=r011 corr=job-20260302-1130 msg="Aggregate invoices" order_id=o_900771 invoices=2 gross=217.26 currency=EUR
+2026-03-02T11:30:00.622+01:00 WARN  recon-svc[31002] trace=9f2b1a1e0b2b49c5 span=r020 corr=job-20260302-1130 msg="Mismatch" order_id=o_900771 expected_gross_eur=217.26 paid_eur_equiv=217.25 diff=-0.01 fx_rate=0.8571 rounding="bankers" tolerance=0.00
+2026-03-02T11:30:00.640+01:00 INFO  recon-svc[31002] trace=9f2b1a1e0b2b49c5 span=r021 corr=job-20260302-1130 msg="Open case" case_id=rc_55019 severity=LOW reason="FX rounding -1 cent" order_id=o_900771
+
+# ---- support agent triggers a "retry payment capture" playbook (rare path). This creates a second hard-to-spot issue.
+
+2026-03-02T12:05:12.111+01:00 INFO  ops-console[410] trace=3b1d3e8a911d4d5c span=o001 corr=ticket-19220 msg="Run playbook" name="retry_failed_capture" order_id=o_900771 target="stripe"
+2026-03-02T12:05:12.130+01:00 INFO  payment-svc[24020] trace=3b1d3e8a911d4d5c span=o002 corr=o_900771 msg="Manual action: retry capture" provider_pi=pi_3PzN7eK9 requested_amount=2762 requested_currency=EUR
+2026-03-02T12:05:12.144+01:00 ERROR payment-svc[24020] trace=3b1d3e8a911d4d5c span=o003 corr=o_900771 msg="Capture failed" provider_pi=pi_3PzN7eK9 code="charge_already_captured" detail="ch_1Qw9xA"
+2026-03-02T12:05:12.157+01:00 WARN  payment-svc[24020] trace=3b1d3e8a911d4d5c span=o004 corr=o_900771 msg="Playbook fallback: create new intent (manual)" amount=2762 currency=EUR
+2026-03-02T12:05:12.166+01:00 DEBUG payment-svc[24020] trace=3b1d3e8a911d4d5c span=o004 corr=o_900771 msg="Compute idempotency key" strategy="orderId+utcDate" idem_key="pay:o_900771:2026-03-02"
+2026-03-02T12:05:12.188+01:00 WARN  payment-svc[24020] trace=3b1d3e8a911d4d5c span=o005 corr=o_900771 msg="Stripe idempotency replay" idem_key="pay:o_900771:2026-03-02" action="CreatePaymentIntent" reused_provider_pi=pi_3PzN7eK9
+
+# ---- webhook duplicates arrive (common in real life). One is out-of-order and looks harmless.
+
+2026-03-02T12:06:01.201+01:00 INFO  payment-svc[24009] trace=8b9b9b0a2f2c4d22 span=bb01 corr=o_900771 msg="Stripe webhook" event="payment_intent.succeeded" provider_pi=pi_3PzN7eK9 attempt=2 duplicate_of_attempt=1
+2026-03-02T12:06:01.210+01:00 DEBUG payment-svc[24009] trace=8b9b9b0a2f2c4d22 span=bb01 corr=o_900771 msg="Dedup check" key="stripe:event:evt_1AA..." result=MISS cache_ttl_s=3600
+2026-03-02T12:06:01.226+01:00 WARN  payment-svc[24009] trace=8b9b9b0a2f2c4d22 span=bb02 corr=o_900771 msg="Duplicate authorization recorded" payment_id=p_450991 provider_pi=pi_3PzN7eK9 note="Upsert matched existing payment_id; no new row"
+2026-03-02T12:06:01.241+01:00 INFO  payment-svc[24009] trace=8b9b9b0a2f2c4d22 span=bb03 corr=o_900771 msg="Emit event" topic=payments event="PaymentAuthorized" payment_id=p_450991 order_id=o_900771 seq=4
+
+2026-03-02T12:06:01.271+01:00 INFO  order-svc[22150] trace=dd0c1f7a8e2f44b6 span=oo01 corr=o_900771 msg="Consume event" topic=payments event="PaymentAuthorized" payment_id=p_450991 seq=4
+2026-03-02T12:06:01.284+01:00 DEBUG order-svc[22150] trace=dd0c1f7a8e2f44b6 span=oo02 corr=o_900771 msg="Idempotency guard" key="order:o_900771:PaymentAuthorized:p_450991" result=HIT action=skip
+
+# ---- downstream ledger has a weaker idempotency scheme (subtle): it keys only on (order_id,event_name,day)
+
+2026-03-02T12:06:01.309+01:00 INFO  ledger-svc[27022] trace=51c089f90cc047a2 span=ll01 corr=o_900771 msg="Consume event" topic=payments event="PaymentAuthorized" payment_id=p_450991
+2026-03-02T12:06:01.318+01:00 DEBUG ledger-svc[27022] trace=51c089f90cc047a2 span=ll02 corr=o_900771 msg="Ledger idem check" key="led:PaymentAuthorized:o_900771:2026-03-02" result=MISS
+2026-03-02T12:06:01.339+01:00 INFO  ledger-svc[27022] trace=51c089f90cc047a2 span=ll03 corr=o_900771 msg="Post journal" journal_id=j_90241 type="PAYMENT_AUTH" order_id=o_900771 amount=189.64 currency=EUR status=POSTED
+
+# ---- now AR is overstated by one authorization journal; later captured journal offsets differently -> tiny mismatch becomes big in month-end close
+
+2026-03-02T23:59:59.901+01:00 INFO  close-svc[33001] trace=0a6c5b2d2c6e4c1a span=c001 corr=close-20260302 msg="Daily close" date=2026-03-02 tenant=acme
+2026-03-02T23:59:59.943+01:00 WARN  close-svc[33001] trace=0a6c5b2d2c6e4c1a span=c010 corr=close-20260302 msg="Unbalanced AR vs payments" account="AR" diff=+189.64 currency=EUR sample_order=o_900771 hint="See journals j_90241, j_90110"
+2026-03-02T23:59:59.960+01:00 INFO  close-svc[33001] trace=0a6c5b2d2c6e4c1a span=c011 corr=close-20260302 msg="Close completed with exceptions" exceptions=1 severity=MEDIUM
+
+# ---- next day someone tries to "fix" by reversing the auth journal; it will accidentally reverse the wrong one if multiple exist (because same weak key)
+
+2026-03-03T08:10:14.022+01:00 INFO  ledger-svc[27030] trace=2f7b3f9c9bcd4c4a span=rv01 corr=ticket-19220 msg="Manual reversal requested" reason="duplicate auth" key="led:PaymentAuthorized:o_900771:2026-03-02"
+2026-03-03T08:10:14.041+01:00 INFO  ledger-svc[27030] trace=2f7b3f9c9bcd4c4a span=rv02 corr=ticket-19220 msg="Reversal posted" reversal_journal_id=j_90302 reversed_journal_id=j_90241
+2026-03-03T08:10:14.049+01:00 WARN  ledger-svc[27030] trace=2f7b3f9c9bcd4c4a span=rv03 corr=ticket-19220 msg="Note" detail="If original auth journal existed before close, downstream reports may have already materialized it" materialized_views="ar_aging,dso"
